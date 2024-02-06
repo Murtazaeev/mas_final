@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/mas
+    username: masUser
+    password: 1234
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create-drop
+    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: always
+
+users:
+  listing:
+    pageSize: 12
