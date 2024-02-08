@@ -25,10 +25,10 @@ INSERT INTO users(id, name, surname, customer_id) VALUES (uuid_generate_v4(), 'M
 
 --Orders
 INSERT INTO orders(id, order_date, order_state, customer_id) VALUES ('b8e45205-d417-45d7-a04f-303266954d87', TO_DATE('2024-01-16','YYYY-MM-DD'), 1,'42d6a42c-40c8-424d-9e3c-6bef049aaf6c');
-INSERT INTO orders(id, order_date, order_state, customer_id) VALUES ('b8e45205-d417-45d7-a04f-303266954d86', TO_DATE('2024-01-17','YYYY-MM-DD'), 0,'42d6a42c-40c8-424d-9e3c-6bef049aaf6c');
+INSERT INTO orders(id, order_date, order_state, customer_id) VALUES ('b8e45205-d417-45d7-a04f-303266954d86', TO_DATE('2024-01-17','YYYY-MM-DD'), 2,'42d6a42c-40c8-424d-9e3c-6bef049aaf6c');
 INSERT INTO orders(id, order_date, order_state, customer_id) VALUES ('b8e45205-d417-45d7-a04f-303266954d85', TO_DATE('2024-01-13','YYYY-MM-DD'), 0,'42d6a42c-40c8-424d-9e3c-6bef049aaf6c');
 INSERT INTO orders(id, order_date, order_state, customer_id) VALUES ('b8e45205-d417-45d7-a04f-303266954d84', TO_DATE('2024-01-19','YYYY-MM-DD'), 3,'42d6a42c-40c8-424d-9e3c-6bef049aaf6c');
-INSERT INTO orders(id, order_date, order_state, customer_id) VALUES ('b8e45205-d417-45d7-a04f-303266954d83', TO_DATE('2024-01-20','YYYY-MM-DD'), 0,'42d6a42c-40c8-424d-9e3c-6bef049aaf6c');
+INSERT INTO orders(id, order_date, order_state, customer_id) VALUES ('b8e45205-d417-45d7-a04f-303266954d83', TO_DATE('2024-01-20','YYYY-MM-DD'), 4,'42d6a42c-40c8-424d-9e3c-6bef049aaf6c');
 
 --Create some book
 INSERT INTO publisher (id, name, phone) VALUES ('bd90362e-fddb-457d-9a1e-e191def365d2', 'publisherName', '+48792682164');

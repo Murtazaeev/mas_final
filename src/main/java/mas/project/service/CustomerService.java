@@ -3,7 +3,6 @@ package mas.project.service;
 
 import mas.project.dto.CustomerDetailsDTO;
 import mas.project.model.Customer;
-import mas.project.model.User;
 import mas.project.repository.CustomerRepository;
 import mas.project.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -43,10 +42,5 @@ public class CustomerService {
                         customer.getUser().getName(),
                         customer.getUser().getSurname()))
                 .orElse(null);
-    }
-
-    @Transactional
-    public Customer getCustomer(UUID id) {
-        return customerRepository.findById(id).get();
     }
 }
