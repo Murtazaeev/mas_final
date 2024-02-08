@@ -1,7 +1,5 @@
-
-
 function Order() {
-  return <div>Order</div>;
+  return <div>Orders</div>;
 }
 
 export default Order;

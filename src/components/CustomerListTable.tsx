@@ -7,6 +7,7 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
+import { useNavigate } from "react-router-dom";
 
 interface Column {
   id: "FirstName" | "Lastname" | "Email";
@@ -19,7 +20,7 @@ const columns: readonly Column[] = [
   { id: "Email", label: "Email" },
 ];
 
-interface CustomerData {
+export interface CustomerData {
   id: string;
   address: string | null;
   email: string;
@@ -27,20 +28,11 @@ interface CustomerData {
   surname: string;
 }
 
-interface CustomerListTableProps {
-  setSelectedCustomerId: React.Dispatch<React.SetStateAction<string | null>>;
-  setShowOrders: React.Dispatch<React.SetStateAction<boolean>>;
-  setSelectedCustomerName: React.Dispatch<React.SetStateAction<string>>;
-  setSelectedCustomerSurname: React.Dispatch<React.SetStateAction<string>>;
-}
+interface CustomerListTableProps {}
 
-const CustomerListTable: React.FC<CustomerListTableProps> = ({
-  setSelectedCustomerId,
-  setShowOrders,
-  setSelectedCustomerName,
-  setSelectedCustomerSurname,
-}) => {
+const CustomerListTable: React.FC<CustomerListTableProps> = ({}) => {
   const [customers, setCustomers] = useState<CustomerData[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCustomers = async () => {
@@ -58,15 +50,12 @@ const CustomerListTable: React.FC<CustomerListTableProps> = ({
   }, []);
 
   const handleRowClick = (customer: CustomerData) => {
-    setSelectedCustomerId(customer.id);
-    setSelectedCustomerName(customer.name);
-    setSelectedCustomerSurname(customer.surname);
-    setShowOrders(true);
+    navigate(`/customer/${customer.id}/orders`);
   };
 
   return (
-    <div className="flex flex-col h-[550px] min-h-[680px]">
-      <div className="flex justify-around items-center text-2xl text-gray-700 font-semibold mb-10 h-20 bg-gray-300 rounded-md">
+    <div className="flex flex-col h-[550px] min-h-[620px]">
+      <div className="flex justify-around items-center text-2xl text-gray-700 font-semibold mb-20 h-20 bg-gray-300 rounded-md">
         <span>Customer list</span>
       </div>
 

@@ -15,6 +15,8 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
 import { TransitionProps } from "@mui/material/transitions";
+import { useParams } from "react-router-dom";
+import { CustomerData } from "./CustomerListTable";
 
 interface OrderData {
   id: string;
@@ -30,14 +32,7 @@ interface InvoiceData {
   bruttoPrice: number;
 }
 
-interface OrderListTableProps {
-  customerId: string | null;
-  showCustomerList: () => void;
-  customerName: string;
-  customerSurname: string;
-  setInvoiceData: React.Dispatch<React.SetStateAction<InvoiceData | null>>;
-  setShowInvoice: React.Dispatch<React.SetStateAction<boolean>>;
-}
+interface OrderListTableProps {}
 
 const columns: readonly { id: keyof OrderData; label: string }[] = [
   { id: "orderDate", label: "Order Date" },
@@ -52,16 +47,14 @@ const Transition = React.forwardRef(function Transition(
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const OrderListTable: React.FC<OrderListTableProps> = ({
-  customerId,
-  showCustomerList,
-  customerName,
-  customerSurname,
-}) => {
+const OrderListTable: React.FC<OrderListTableProps> = ({}) => {
   const [orders, setOrders] = useState<OrderData[]>([]);
   const [selectedOrder, setSelectedOrder] = useState<OrderData | null>(null);
   const [open, setOpen] = useState(false);
   const [invoiceData, setInvoiceData] = useState<InvoiceData | null>(null);
+  const [customers, setCustomers] = useState<CustomerData>();
+
+  const { customerId } = useParams<{ customerId: string }>();
 
   useEffect(() => {
     if (customerId) {
@@ -78,6 +71,21 @@ const OrderListTable: React.FC<OrderListTableProps> = ({
       fetchOrders();
     }
   }, [customerId]);
+
+  useEffect(() => {
+    const fetchCustomers = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/customer/userDetails/${customerId}`
+        );
+        setCustomers(response.data);
+      } catch (error) {
+        console.error("There was an error fetching the customers!", error);
+      }
+    };
+
+    fetchCustomers();
+  }, []);
 
   const handleGetInvoice = async (order: OrderData) => {
     setSelectedOrder(order);
@@ -112,17 +120,12 @@ const OrderListTable: React.FC<OrderListTableProps> = ({
 
   return (
     <div className="flex flex-col h-[550px] min-h-[680px]">
-      <div className="flex justify-around items-center text-2xl text-gray-700 font-semibold  h-20 bg-gray-300 rounded-md">
+      <div className="flex justify-around items-center text-2xl text-gray-700 font-semibold mb-20  h-20 bg-gray-300 rounded-md">
         <span>
-          Order list of customer: {customerName} {customerSurname}{" "}
+          Order list of customer: {customers?.name} {customers?.surname}
         </span>
       </div>
-      <button
-        className="w-[150px] h-[30px] mt-4 mb-4 bg-gray-400 rounded-lg text-center font-bold"
-        onClick={showCustomerList}
-      >
-        Go Back
-      </button>
+
       <Paper
         sx={{
           marginLeft: "auto",
@@ -172,8 +175,7 @@ const OrderListTable: React.FC<OrderListTableProps> = ({
               ) : (
                 <TableRow>
                   <TableCell colSpan={3} align="center">
-                    The customer you selected does not have any order, please
-                    come back when order is added to the customer.
+                    The selected customer does not have any order at the moment
                   </TableCell>
                 </TableRow>
               )}
@@ -190,18 +192,35 @@ const OrderListTable: React.FC<OrderListTableProps> = ({
         <DialogContent>
           {invoiceData ? (
             <>
-              <DialogContentText>ID: {invoiceData.id}</DialogContentText>
               <DialogContentText>
-                Status: {selectedOrder?.orderState}
+                <span className="text-black font-semibold">ID:</span>{" "}
+                <span className="text-gray-700 font-medium italic">
+                  {invoiceData.id}
+                </span>
               </DialogContentText>
               <DialogContentText>
-                Tax Rate: {invoiceData.taxRateInPercentage}%
+                <span className="text-black font-semibold">Status:</span>{" "}
+                <span className="text-gray-700 font-medium italic">
+                  {selectedOrder?.orderState}
+                </span>
               </DialogContentText>
               <DialogContentText>
-                Netto Price: {invoiceData.nettoPrice} PLN
+                <span className="text-black font-semibold">Tax Rate:</span>{" "}
+                <span className="text-gray-700 font-medium italic">
+                  {invoiceData.taxRateInPercentage}%
+                </span>
               </DialogContentText>
               <DialogContentText>
-                Brutto Price: {invoiceData.bruttoPrice} PLN
+                <span className="text-black font-semibold">Netto Price:</span>{" "}
+                <span className="text-gray-700 font-medium italic">
+                  {invoiceData.nettoPrice} PLN
+                </span>
+              </DialogContentText>
+              <DialogContentText>
+                <span className="text-black font-semibold">Brutto Price:</span>{" "}
+                <span className="text-gray-700 font-medium italic">
+                  {invoiceData.bruttoPrice} PLN
+                </span>
               </DialogContentText>
             </>
           ) : (
