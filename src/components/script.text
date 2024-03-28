@@ -1,19 +1,70 @@
+I have springboot project about bookshop.
+
+and my file structure is like that:
+
+project (package)
+        dto (package)
+                CustomerDetailsDTO.java
+        exception (package)
+                ModelValidationException.java
+        model (package)
+                enumeration (package )
+                        OrderState (enum)
+                        WorkingDays (enum)
+                Address.java
+                Author.java
+                Book.java
+                Customer.java
+                Employee.java
+                Invoice.java
+                LoyalityCard.java
+                Manager.java
+                Order.java
+                OrderItem.java
+                Publisher.java
+                Salesman.java
+                Stock.java
+                SupplyOrder.java
+                SupplyOrderDetails.java
+                User.java
+                WebUser.java
+        repository (package)
+                BookRepository (interface)
+                CustomerRepository (interface)
+                InvoiceRepository (interface)
+                OrderItemRepository (interface)
+                OrderRepository (interface)
+                UserRepository (interface)
+        service (package)
+                CustomerService.java
+                InvoiceService.java
+                OrderService.java
+        web (package)
+                controller (package)
+                        CutomerController.java
+                        InvoiceController.java
+                        OrderController.java
+        ProjectApplication.java (main class)
+
 package mas.project.dto;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.*;
 
 import java.util.UUID;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
+@Setter
+@Getter
 public class CustomerDetailsDTO {
     private UUID id;
     private String email;
     private String name;
     private String surname;
 }
+
 
 package mas.project.expception;
 
@@ -42,6 +93,7 @@ public enum WorkingDays {
     Thursday,
     Friday
 }
+
 
 package mas.project.model;
 
@@ -72,6 +124,7 @@ public class Address {
     private String city;
 
 }
+
 
 package mas.project.model;
 
@@ -126,6 +179,7 @@ public class Author {
     private Set<Book> books = new HashSet<>();
 
 }
+
 
 package mas.project.model;
 
@@ -194,6 +248,7 @@ public class Book {
     private Set<Author> authors = new HashSet<>();
 }
 
+
 package mas.project.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -247,6 +302,7 @@ public class Customer{
     @EqualsAndHashCode.Exclude
     private Set<Order> orders = new HashSet<>();
 }
+
 
 package mas.project.model;
 
@@ -333,6 +389,7 @@ public class Invoice {
 }
 
 
+
 package mas.project.model;
 
 import lombok.*;
@@ -375,6 +432,8 @@ public class LoyaltyCard {
 
 
 }
+
+
 
 package mas.project.model;
 
@@ -479,6 +538,8 @@ public class Order {
 
 }
 
+
+
 package mas.project.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -533,6 +594,8 @@ public class OrderItem {
 
 }
 
+
+
 package mas.project.model;
 
 import lombok.*;
@@ -581,6 +644,8 @@ public class Publisher {
 
 
 }
+
+
 
 package mas.project.model;
 
@@ -648,6 +713,7 @@ public class Stock {
 }
 
 
+
 package mas.project.model;
 
 import com.sun.istack.NotNull;
@@ -689,6 +755,9 @@ public class SupplyOrder {
     private Salesman salesman;
 
 }
+
+
+
 
 
 package mas.project.model;
@@ -737,6 +806,7 @@ public class SupplyOrderDetails {
     private SupplyOrder supplyOrder;
 
 }
+
 
 
 package mas.project.model;
@@ -830,6 +900,7 @@ public class User {
 }
 
 
+
 package mas.project.model;
 
 import lombok.AllArgsConstructor;
@@ -840,6 +911,7 @@ import lombok.Data;
 public class WebUser {
 
 }
+
 
 package mas.project.repository;
 
@@ -867,6 +939,7 @@ public interface CustomerRepository extends JpaRepository<Customer, UUID> {
 }
 
 
+
 package mas.project.repository;
 
 import mas.project.model.Invoice;
@@ -884,6 +957,7 @@ public interface InvoiceRepository extends JpaRepository<Invoice, UUID> {
 }
 
 
+
 package mas.project.repository;
 
 import mas.project.model.OrderItem;
@@ -893,6 +967,7 @@ import java.util.UUID;
 
 public interface OrderItemRepository extends JpaRepository<OrderItem, UUID> {
 }
+
 
 
 package mas.project.repository;
@@ -916,6 +991,7 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
 }
 
 
+
 package mas.project.repository;
 
 import mas.project.model.User;
@@ -932,12 +1008,12 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
 }
 
+
 package mas.project.service;
 
 
 import mas.project.dto.CustomerDetailsDTO;
 import mas.project.model.Customer;
-import mas.project.model.User;
 import mas.project.repository.CustomerRepository;
 import mas.project.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -958,7 +1034,7 @@ public class CustomerService {
         this.customerRepository = customerRepository;
         this.userRepository = userRepository;
     }
-    @Transactional
+
     public List<CustomerDetailsDTO> getAllCustomerDetails() {
         List<Customer> customers = customerRepository.findAll();
         return customers.stream().map(customer -> new CustomerDetailsDTO(
@@ -968,7 +1044,7 @@ public class CustomerService {
                 customer.getUser().getSurname()
         )).collect(Collectors.toList());
     }
-    @Transactional
+
     public CustomerDetailsDTO getCustomerDetails(UUID customerId) {
         return customerRepository.findById(customerId)
                 .map(customer -> new CustomerDetailsDTO(
@@ -976,16 +1052,9 @@ public class CustomerService {
                         customer.getEmail(),
                         customer.getUser().getName(),
                         customer.getUser().getSurname()))
-
                 .orElse(null);
     }
-
-    @Transactional
-    public Customer getCustomer(UUID id) {
-        return customerRepository.findById(id).get();
-    }
 }
-
 
 
 package mas.project.service;
@@ -1014,6 +1083,8 @@ public class InvoiceService {
     }
 
 }
+
+
 
 package mas.project.service;
 
@@ -1058,6 +1129,7 @@ public class OrderService {
  //   }
 
 }
+
 
 
 package mas.project.web.controller;
@@ -1107,6 +1179,7 @@ public class CustomerController {
         return ResponseEntity.ok(customers);
     }
 }
+
 
 
 package mas.project.web.controller;
@@ -1197,10 +1270,13 @@ public class OrderController {
 }
 
 
+
 package mas.project;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+
 
 @SpringBootApplication
 public class ProjectApplication {
@@ -1210,6 +1286,29 @@ public class ProjectApplication {
     }
 
 }
+
+
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/mas
+    username: masUser
+    password: 1234
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create-drop
+    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: always
+
+users:
+  listing:
+    pageSize: 12
+
 
 
 --Customers
@@ -1239,15 +1338,42 @@ INSERT INTO users(id, name, surname, customer_id) VALUES (uuid_generate_v4(), 'M
 
 --Orders
 INSERT INTO orders(id, order_date, order_state, customer_id) VALUES ('b8e45205-d417-45d7-a04f-303266954d87', TO_DATE('2024-01-16','YYYY-MM-DD'), 1,'42d6a42c-40c8-424d-9e3c-6bef049aaf6c');
-INSERT INTO orders(id, order_date, order_state, customer_id) VALUES ('b8e45205-d417-45d7-a04f-303266954d86', TO_DATE('2024-01-17','YYYY-MM-DD'), 0,'42d6a42c-40c8-424d-9e3c-6bef049aaf6c');
+INSERT INTO orders(id, order_date, order_state, customer_id) VALUES ('b8e45205-d417-45d7-a04f-303266954d86', TO_DATE('2024-01-17','YYYY-MM-DD'), 2,'42d6a42c-40c8-424d-9e3c-6bef049aaf6c');
 INSERT INTO orders(id, order_date, order_state, customer_id) VALUES ('b8e45205-d417-45d7-a04f-303266954d85', TO_DATE('2024-01-13','YYYY-MM-DD'), 0,'42d6a42c-40c8-424d-9e3c-6bef049aaf6c');
 INSERT INTO orders(id, order_date, order_state, customer_id) VALUES ('b8e45205-d417-45d7-a04f-303266954d84', TO_DATE('2024-01-19','YYYY-MM-DD'), 3,'42d6a42c-40c8-424d-9e3c-6bef049aaf6c');
-INSERT INTO orders(id, order_date, order_state, customer_id) VALUES ('b8e45205-d417-45d7-a04f-303266954d83', TO_DATE('2024-01-20','YYYY-MM-DD'), 0,'42d6a42c-40c8-424d-9e3c-6bef049aaf6c');
+INSERT INTO orders(id, order_date, order_state, customer_id) VALUES ('b8e45205-d417-45d7-a04f-303266954d83', TO_DATE('2024-01-20','YYYY-MM-DD'), 4,'42d6a42c-40c8-424d-9e3c-6bef049aaf6c');
 
---Create some book
+--Creating orders for Rustam Orozov
+INSERT INTO orders(id, order_date, order_state, customer_id) VALUES ('fc0153d5-c615-43f2-a744-e45574f8a05e', TO_DATE('2024-12-16','YYYY-MM-DD'), 1,'42d6a42c-40c8-424d-9e3c-6bef049aaf7c');
+INSERT INTO orders(id, order_date, order_state, customer_id) VALUES ('27c5dfed-a783-42f2-b1f0-92cbeef0ad53', TO_DATE('2024-11-17','YYYY-MM-DD'), 2,'42d6a42c-40c8-424d-9e3c-6bef049aaf7c');
+INSERT INTO orders(id, order_date, order_state, customer_id) VALUES ('744c59c4-6be5-4370-a38e-da101d540084', TO_DATE('2024-01-13','YYYY-MM-DD'), 0,'42d6a42c-40c8-424d-9e3c-6bef049aaf7c');
+INSERT INTO orders(id, order_date, order_state, customer_id) VALUES ('334a0648-198b-4669-b651-bd40cdf3f164', TO_DATE('2024-08-19','YYYY-MM-DD'), 3,'42d6a42c-40c8-424d-9e3c-6bef049aaf7c');
+INSERT INTO orders(id, order_date, order_state, customer_id) VALUES ('4da3ca04-5a03-4fc6-9bf6-cd7d264a158e', TO_DATE('2024-03-20','YYYY-MM-DD'), 4,'42d6a42c-40c8-424d-9e3c-6bef049aaf7c');
+
+
+--Creating orders for Ulubek Shakirov
+INSERT INTO orders(id, order_date, order_state, customer_id) VALUES ('5591a905-667e-4013-a25d-83a25847502b', TO_DATE('2024-02-01','YYYY-MM-DD'), 1, '42d6a42c-40c8-424d-9e3c-6bef049aaf5c');
+INSERT INTO orders(id, order_date, order_state, customer_id) VALUES ('765e07a0-8bb0-4953-9964-01cd91e98b7c', TO_DATE('2024-02-02','YYYY-MM-DD'), 2, '42d6a42c-40c8-424d-9e3c-6bef049aaf5c');
+INSERT INTO orders(id, order_date, order_state, customer_id) VALUES ('527f2fd4-4930-45d7-ba19-3794b8edffc4', TO_DATE('2024-02-03','YYYY-MM-DD'), 0, '42d6a42c-40c8-424d-9e3c-6bef049aaf5c');
+INSERT INTO orders(id, order_date, order_state, customer_id) VALUES ('5d270052-e8aa-4cf8-84c9-10ad936ff91f', TO_DATE('2024-02-04','YYYY-MM-DD'), 3, '42d6a42c-40c8-424d-9e3c-6bef049aaf5c');
+INSERT INTO orders(id, order_date, order_state, customer_id) VALUES ('2715d0c0-f414-436e-8f0a-a8b6c2d0cf80', TO_DATE('2024-02-05','YYYY-MM-DD'), 4, '42d6a42c-40c8-424d-9e3c-6bef049aaf5c');
+
+
+
+--Create book
 INSERT INTO publisher (id, name, phone) VALUES ('bd90362e-fddb-457d-9a1e-e191def365d2', 'publisherName', '+48792682164');
 INSERT INTO book(id, category, number_of_pages, price, publish_date, title, publisher_id) VALUES(
                                                                                                     '42d6a42c-40c8-424d-9e3c-6bef049aaf9b', 'Science', 375, 75, TO_DATE('2024-01-20','YYYY-MM-DD'), 'Cracking Coding Interview', 'bd90362e-fddb-457d-9a1e-e191def365d2');
+
+--Create book for Rustam Orozov
+INSERT INTO publisher (id, name, phone) VALUES ('7fad09ad-0a3f-43a6-91ac-26db5b91a52f', 'Publisher Temurka', '+48576476217');
+INSERT INTO book(id, category, number_of_pages, price, publish_date, title, publisher_id) VALUES(
+                                                                                                    '087cfb5e-c698-480f-8b4e-84459f9aab61', 'Romance', 375, 75, TO_DATE('2024-01-20','YYYY-MM-DD'), 'Romeo and Juliet', '7fad09ad-0a3f-43a6-91ac-26db5b91a52f');
+--Creating book for Ulugbek Shakirov
+INSERT INTO publisher(id, name, phone) VALUES ('28ac6b80-a2d4-4ba2-beb1-6b66372f4007', 'Random', '+9998787865');
+INSERT INTO book (id, category, number_of_pages, price, publish_date, title, publisher_id) VALUES
+    ('9a547682-1a67-4e6b-b7ff-74f9380aef87', 'Fiction', 320, 40, TO_DATE('2024-02-08','YYYY-MM-DD'), 'Random Adventures', '28ac6b80-a2d4-4ba2-beb1-6b66372f4007');
+
 
 --Order items
 ALTER TABLE order_item DROP CONSTRAINT uk_f67xlaxtwr6wwab7u7mxndi5s;
@@ -1263,6 +1389,33 @@ INSERT INTO order_item(id, quantity, book_id, order_id) VALUES
 INSERT INTO order_item(id, quantity, book_id, order_id) VALUES
     (uuid_generate_v4(), 20, '42d6a42c-40c8-424d-9e3c-6bef049aaf9b', 'b8e45205-d417-45d7-a04f-303266954d83');
 
+
+--creating for Rustam Orozov
+INSERT INTO order_item(id, quantity, book_id, order_id) VALUES
+    (uuid_generate_v4(), 20, '42d6a42c-40c8-424d-9e3c-6bef049aaf9b', 'fc0153d5-c615-43f2-a744-e45574f8a05e');
+INSERT INTO order_item(id, quantity, book_id, order_id) VALUES
+    (uuid_generate_v4(), 10, '42d6a42c-40c8-424d-9e3c-6bef049aaf9b', '27c5dfed-a783-42f2-b1f0-92cbeef0ad53');
+INSERT INTO order_item(id, quantity, book_id, order_id) VALUES
+    (uuid_generate_v4(), 20, '42d6a42c-40c8-424d-9e3c-6bef049aaf9b', '744c59c4-6be5-4370-a38e-da101d540084');
+INSERT INTO order_item(id, quantity, book_id, order_id) VALUES
+    (uuid_generate_v4(), 10, '42d6a42c-40c8-424d-9e3c-6bef049aaf9b', '334a0648-198b-4669-b651-bd40cdf3f164');
+INSERT INTO order_item(id, quantity, book_id, order_id) VALUES
+    (uuid_generate_v4(), 20, '42d6a42c-40c8-424d-9e3c-6bef049aaf9b', '4da3ca04-5a03-4fc6-9bf6-cd7d264a158e');
+
+
+--Creating for Shakirov Ulugbek
+INSERT INTO order_item (id, quantity, book_id, order_id) VALUES
+    ('a94335df-8b31-42c8-91c5-935f13eea295', 5, '9a547682-1a67-4e6b-b7ff-74f9380aef87', '5591a905-667e-4013-a25d-83a25847502b');
+INSERT INTO order_item (id, quantity, book_id, order_id) VALUES
+    ('49f00ed9-c375-40c9-9e91-c859f0f42d31', 2, '9a547682-1a67-4e6b-b7ff-74f9380aef87', '765e07a0-8bb0-4953-9964-01cd91e98b7c');
+INSERT INTO order_item (id, quantity, book_id, order_id) VALUES
+    ('e8e90dcc-bd47-45ec-ad79-272601dcc160', 3, '9a547682-1a67-4e6b-b7ff-74f9380aef87', '527f2fd4-4930-45d7-ba19-3794b8edffc4');
+INSERT INTO order_item (id, quantity, book_id, order_id) VALUES
+    ('341cdde6-dfe4-48a6-9908-eec9849f45ae', 4, '9a547682-1a67-4e6b-b7ff-74f9380aef87', '5d270052-e8aa-4cf8-84c9-10ad936ff91f');
+INSERT INTO order_item (id, quantity, book_id, order_id) VALUES
+    ('ed71c5a1-8f54-4a9a-9bd6-aa878d8cb583', 1, '9a547682-1a67-4e6b-b7ff-74f9380aef87', '2715d0c0-f414-436e-8f0a-a8b6c2d0cf80');
+
+
 --Creating invoice
 INSERT INTO invoice(id, tax_rate_in_percentage, order_id) VALUES
     (uuid_generate_v4(), 24, 'b8e45205-d417-45d7-a04f-303266954d87');
@@ -1274,4 +1427,50 @@ INSERT INTO invoice(id, tax_rate_in_percentage, order_id) VALUES
     (uuid_generate_v4(), 21, 'b8e45205-d417-45d7-a04f-303266954d84');
 INSERT INTO invoice(id, tax_rate_in_percentage, order_id) VALUES
     (uuid_generate_v4(), 24, 'b8e45205-d417-45d7-a04f-303266954d83');
+
+--Creating invoice for Rustam Urazov
+INSERT INTO invoice(id, tax_rate_in_percentage, order_id) VALUES
+    (uuid_generate_v4(), 24, 'fc0153d5-c615-43f2-a744-e45574f8a05e');
+INSERT INTO invoice(id, tax_rate_in_percentage, order_id) VALUES
+    (uuid_generate_v4(), 21, '27c5dfed-a783-42f2-b1f0-92cbeef0ad53');
+INSERT INTO invoice(id, tax_rate_in_percentage, order_id) VALUES
+    (uuid_generate_v4(), 24, '744c59c4-6be5-4370-a38e-da101d540084');
+INSERT INTO invoice(id, tax_rate_in_percentage, order_id) VALUES
+    (uuid_generate_v4(), 21, '334a0648-198b-4669-b651-bd40cdf3f164');
+INSERT INTO invoice(id, tax_rate_in_percentage, order_id) VALUES
+    (uuid_generate_v4(), 24, '4da3ca04-5a03-4fc6-9bf6-cd7d264a158e');
+
+--Creating for Ulugbek Shakirov
+INSERT INTO invoice (id, tax_rate_in_percentage, order_id) VALUES
+    ('746e14de-58aa-44c2-a102-abe69b07a2f6', 20, '5591a905-667e-4013-a25d-83a25847502b');
+INSERT INTO invoice (id, tax_rate_in_percentage, order_id) VALUES
+    ('110449f9-ab6e-4496-ac57-c97313a9e273', 18, '765e07a0-8bb0-4953-9964-01cd91e98b7c');
+INSERT INTO invoice (id, tax_rate_in_percentage, order_id) VALUES
+    ('55d94e57-9a5e-4df4-82bd-1ea9b7dfa288', 19, '527f2fd4-4930-45d7-ba19-3794b8edffc4');
+INSERT INTO invoice (id, tax_rate_in_percentage, order_id) VALUES
+    ('59df82e4-9544-4af7-aa11-28471f363075', 17, '5d270052-e8aa-4cf8-84c9-10ad936ff91f');
+INSERT INTO invoice (id, tax_rate_in_percentage, order_id) VALUES
+    ('4ca29677-f40f-4a82-845a-b098a32b2bfa', 15, '2715d0c0-f414-436e-8f0a-a8b6c2d0cf80');
+
+
+
+
+--Deleting customer
+
+-- SELECT customer.id
+-- FROM customer
+--          JOIN users ON customer.id = users.customer_id
+-- WHERE users.name = 'Rustam' AND users.surname = 'Orozov';
+--
+-- DELETE FROM invoice WHERE order_id IN (SELECT id FROM orders WHERE customer_id = '42d6a42c-40c8-424d-9e3c-6bef049aaf7c');
+-- DELETE FROM order_item WHERE order_id IN (SELECT id FROM orders WHERE customer_id = '42d6a42c-40c8-424d-9e3c-6bef049aaf7c');
+-- DELETE FROM orders WHERE customer_id = '42d6a42c-40c8-424d-9e3c-6bef049aaf7c';
+--
+-- -- Delete Rustam Orozov from the users table
+-- DELETE FROM users WHERE customer_id = '42d6a42c-40c8-424d-9e3c-6bef049aaf7c';
+--
+-- -- Delete Rustam Orozov's customer record
+-- DELETE FROM customer WHERE id = '42d6a42c-40c8-424d-9e3c-6bef049aaf7c';
+
+
 

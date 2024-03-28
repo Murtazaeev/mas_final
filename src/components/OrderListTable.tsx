@@ -85,7 +85,7 @@ const OrderListTable: React.FC<OrderListTableProps> = ({}) => {
     };
 
     fetchCustomers();
-  }, []);
+  }, [customerId]);
 
   const handleGetInvoice = async (order: OrderData) => {
     setSelectedOrder(order);

@@ -103,9 +103,15 @@ const CustomerListTable: React.FC<CustomerListTableProps> = ({}) => {
                     },
                   }}
                 >
-                  <TableCell align="center">{customer.name}</TableCell>
-                  <TableCell align="center">{customer.surname}</TableCell>
-                  <TableCell align="center">{customer.email}</TableCell>
+                  <TableCell sx={{ fontSize: "16px" }} align="center">
+                    {customer.name}
+                  </TableCell>
+                  <TableCell sx={{ fontSize: "14px" }} align="center">
+                    {customer.surname}
+                  </TableCell>
+                  <TableCell sx={{ fontSize: "14px" }} align="center">
+                    {customer.email}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
