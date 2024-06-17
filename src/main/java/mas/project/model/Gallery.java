@@ -4,17 +4,17 @@ import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Data
-@Entity(name = "loyaltyCard")
-@NoArgsConstructor
+@Entity(name = "gallery")
+@NoArgsConstructor(force = true)
 @AllArgsConstructor
-public class LoyaltyCard {
+public class Gallery {
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -25,16 +25,16 @@ public class LoyaltyCard {
     private UUID id;
 
     @NotBlank
-    @Column(unique = true)
-    @Size(min = 1, max = 80)
-    private String cardName;
+    private String name;
 
     @NotNull
-    private Double priceReductionInPercentage;
+    private Address address;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "customer_id")
+    @NotBlank
+    private String phone;
+
+    @OneToMany(mappedBy = "gallery")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private Customer customer;
+    private Set<Artwork> artworks = new HashSet<>();
 }

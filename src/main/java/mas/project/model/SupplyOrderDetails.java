@@ -42,5 +42,4 @@ public class SupplyOrderDetails {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private SupplyOrder supplyOrder;
-
 }

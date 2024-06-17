@@ -16,8 +16,8 @@ import java.util.UUID;
 @NoArgsConstructor(force = true)
 @AllArgsConstructor
 @Table(uniqueConstraints = {
-                @UniqueConstraint(columnNames={"book_id", "order_id"})}
-)
+        @UniqueConstraint(columnNames = {"artwork_copy_id", "order_id"})
+})
 public class OrderItem {
 
     @Id
@@ -44,10 +44,9 @@ public class OrderItem {
     @EqualsAndHashCode.Exclude
     private Set<SupplyOrderDetails> supplyOrderDetails = new HashSet<>();
 
-    @OneToOne(optional = false)
-    @JoinColumn(name = "book_id", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "artwork_copy_id", referencedColumnName = "id")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private Book book;
-
+    private ArtworkCopy artworkCopy;
 }

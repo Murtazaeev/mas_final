@@ -10,10 +10,9 @@ import java.util.UUID;
 
 public interface OrderRepository extends JpaRepository<Order, UUID> {
 
-    @Query("from orders as o join fetch o.customer where o.customer.id = :cusId order by o.orderDate desc")
+    @Query("from orders as o join fetch o.customer as customer where o.customer.id = :cusId order by o.orderDate desc")
     List<Order> findCustomerOrdersByCustomerId(@Param("cusId") UUID cusId);
 
     @Query("from orders as o where o.id = :orderId ")
     Order findOrderById(@Param("orderId") UUID orderId);
-
 }

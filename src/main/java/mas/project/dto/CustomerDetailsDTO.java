@@ -1,18 +1,50 @@
 package mas.project.dto;
 
-
-import lombok.*;
-
 import java.util.UUID;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Setter
-@Getter
 public class CustomerDetailsDTO {
     private UUID id;
     private String email;
     private String name;
     private String surname;
+
+    public CustomerDetailsDTO(UUID id, String email, String name, String surname) {
+        this.id = id;
+        this.email = email;
+        this.name = name;
+        this.surname = surname;
+    }
+
+    // Getters and setters
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
 }

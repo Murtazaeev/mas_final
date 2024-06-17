@@ -18,12 +18,11 @@ import java.util.UUID;
 @RequestMapping("/customer")
 @Data
 @Slf4j
-
 public class CustomerController {
 
     private CustomerService service;
 
-    public CustomerController(CustomerService customerService){
+    public CustomerController(CustomerService customerService) {
         this.service = customerService;
     }
 

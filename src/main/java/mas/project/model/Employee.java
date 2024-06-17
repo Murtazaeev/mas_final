@@ -34,5 +34,4 @@ public abstract class Employee {
 
     @NotNull
     private Date workFromDate;
-
 }

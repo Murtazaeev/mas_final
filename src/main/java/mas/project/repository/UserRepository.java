@@ -1,15 +1,12 @@
 package mas.project.repository;
 
 import mas.project.model.User;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import org.springframework.data.repository.CrudRepository;
 
 import java.util.UUID;
 
-public interface UserRepository extends JpaRepository<User, UUID> {
-
-    @Query("from users as u left join fetch u.customer where u.customer.id = :id")
-    User getCustomerUserDetails(@Param("id") UUID id);
-
+public interface UserRepository extends CrudRepository<User, UUID> {
+    @Query("from User u left join fetch u.customer where u.customer.id = :id")
+    User getCustomerUserDetails(UUID id);
 }

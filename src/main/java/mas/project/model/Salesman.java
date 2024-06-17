@@ -12,12 +12,12 @@ import java.util.Set;
 @Entity(name = "salesman")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Salesman extends Employee{
+public class Salesman extends Employee {
 
     @NotNull
     private WorkingDays workingDays;
 
-    @OneToOne(mappedBy = "customer", optional = false)
+    @OneToOne(mappedBy = "salesman", optional = false)
     @ToString.Exclude
     private User user;
 
@@ -25,5 +25,4 @@ public class Salesman extends Employee{
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Set<SupplyOrder> supplyOrders = new HashSet<>();
-
 }

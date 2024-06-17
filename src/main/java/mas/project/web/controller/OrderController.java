@@ -21,26 +21,25 @@ public class OrderController {
 
     private OrderService orderService;
 
-    public OrderController(OrderService orderService){
+    public OrderController(OrderService orderService) {
         this.orderService = orderService;
     }
 
     @GetMapping("/customerOrders/{customerId}")
-    public ResponseEntity<List<Order>> getCustomerUserDetails(@PathVariable UUID customerId){
+    public ResponseEntity<List<Order>> getCustomerUserDetails(@PathVariable UUID customerId) {
         var customerOrders = orderService.getCustomerOrdersByCustomerId(customerId);
-        if(customerOrders.size() < 1){
+        if (customerOrders.size() < 1) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(customerOrders, HttpStatus.OK);
     }
 
     @GetMapping("/orderDetails/{orderId}")
-    public ResponseEntity<Order> getOrderDetails(@PathVariable UUID orderId){
+    public ResponseEntity<Order> getOrderDetails(@PathVariable UUID orderId) {
         var order = orderService.getOrderByOrderId(orderId);
-        if(order == null){
+        if (order == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(order, HttpStatus.OK);
     }
-
 }

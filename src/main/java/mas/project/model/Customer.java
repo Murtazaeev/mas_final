@@ -1,6 +1,5 @@
 package mas.project.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -13,19 +12,18 @@ import java.util.Set;
 import java.util.UUID;
 
 @Data
-@Entity(name = "customer")
+@Entity
+@Table(name = "customer")
 @NoArgsConstructor
 @AllArgsConstructor
-
-public class Customer{
-
+public class Customer {
     @Id
     @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator"
-    )
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private UUID id;
+
+    @NotBlank
+    private String PESEL;
 
     @NotNull
     private Address address;
@@ -34,7 +32,6 @@ public class Customer{
     @Size(min = 3, max = 30)
     private String email;
 
-    @JsonBackReference
     @OneToOne(mappedBy = "customer", optional = false)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
@@ -44,10 +41,4 @@ public class Customer{
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Set<LoyaltyCard> loyaltyCards = new HashSet<>();
-
-    @JsonBackReference
-    @OneToMany(mappedBy = "customer")
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    private Set<Order> orders = new HashSet<>();
 }

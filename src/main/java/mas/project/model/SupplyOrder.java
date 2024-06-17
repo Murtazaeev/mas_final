@@ -37,5 +37,4 @@ public class SupplyOrder {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Salesman salesman;
-
 }

@@ -1,6 +1,5 @@
 package mas.project.service;
 
-
 import mas.project.dto.CustomerDetailsDTO;
 import mas.project.model.Customer;
 import mas.project.repository.CustomerRepository;
@@ -18,22 +17,15 @@ public class CustomerService {
     private final CustomerRepository customerRepository;
     private final UserRepository userRepository;
 
-
     public CustomerService(CustomerRepository customerRepository, UserRepository userRepository) {
         this.customerRepository = customerRepository;
         this.userRepository = userRepository;
     }
-    @Transactional
+
     public List<CustomerDetailsDTO> getAllCustomerDetails() {
-        List<Customer> customers = customerRepository.findAll();
-        return customers.stream().map(customer -> new CustomerDetailsDTO(
-                customer.getId(),
-                customer.getEmail(),
-                customer.getUser().getName(),
-                customer.getUser().getSurname()
-        )).collect(Collectors.toList());
+        return customerRepository.getAllCustomerDetails();
     }
-    @Transactional
+
     public CustomerDetailsDTO getCustomerDetails(UUID customerId) {
         return customerRepository.findById(customerId)
                 .map(customer -> new CustomerDetailsDTO(

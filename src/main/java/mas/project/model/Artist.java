@@ -13,10 +13,10 @@ import java.util.Set;
 import java.util.UUID;
 
 @Data
-@Entity(name = "author")
+@Entity(name = "artist")
 @NoArgsConstructor(force = true)
 @AllArgsConstructor
-public class Author {
+public class Artist {
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -42,12 +42,11 @@ public class Author {
     private Date birthDate;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name="author_book",
-            joinColumns=@JoinColumn(name="book_id"),
-            inverseJoinColumns=@JoinColumn(name="author_id")
+    @JoinTable(name = "artist_artwork",
+            joinColumns = @JoinColumn(name = "artist_id"),
+            inverseJoinColumns = @JoinColumn(name = "artwork_id")
     )
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private Set<Book> books = new HashSet<>();
-
+    private Set<Artwork> artworks = new HashSet<>();
 }

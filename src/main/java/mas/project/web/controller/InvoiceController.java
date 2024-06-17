@@ -21,18 +21,17 @@ public class InvoiceController {
     private InvoiceService invoiceService;
     private OrderService orderService;
 
-    public InvoiceController(InvoiceService invoiceService, OrderService orderService){
+    public InvoiceController(InvoiceService invoiceService, OrderService orderService) {
         this.invoiceService = invoiceService;
         this.orderService = orderService;
     }
 
     @GetMapping("/{orderId}")
-    public ResponseEntity<Invoice> getInvoiceByOrderId(@PathVariable UUID orderId){
+    public ResponseEntity<Invoice> getInvoiceByOrderId(@PathVariable UUID orderId) {
         var invoice = invoiceService.getInvoiceByOrderId(orderId);
-        if(invoice == null){
+        if (invoice == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(invoice, HttpStatus.OK);
     }
-
 }

@@ -31,10 +31,11 @@ public class Order {
     @NotNull
     private Date orderDate;
 
-    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private OrderState orderState;
 
-    @Formula(value = "(SELECT SUM(b.price*oi.quantity) FROM order_item oi, book b WHERE oi.order_id = id AND oi.book_id = b.id)")
+    @Formula(value = "(SELECT SUM(b.price*oi.quantity) FROM order_item oi, artworkCopy b WHERE oi.order_id = id AND oi.artworkCopy_id = b.id)")
     private double retailPrice;
 
     @JsonManagedReference
@@ -56,18 +57,12 @@ public class Order {
     @EqualsAndHashCode.Exclude
     private Invoice invoice;
 
-    //@Formula("(SELECT SUM(order_item.quantity*book.price) FROM order_item, book, orders WHERE order_item.order_id = orders.id AND book.id = order_item.book_id)")
-    //private Double retailPrice;
-
-    //  @Formula("(SELECT SUM(CAST(oi.quantity as DOUBLE PRECISION)* b.price) FROM order_item oi, book b WHERE oi.order_id = id AND oi.book_id = b.id)")
-    // private double retailPrice;
-
-    public boolean canGetInvoice(OrderState orderState){
+    public boolean canGetInvoice(OrderState orderState) {
         OrderState currentOrderState = getOrderState();
-        if(currentOrderState == OrderState.WAITING_FOR_SUPPLY || currentOrderState == OrderState.CANCELED ){
+        if (currentOrderState == OrderState.WAITING_FOR_SUPPLY || currentOrderState == OrderState.CANCELED) {
             return false;
         }
         return true;
     }
-
 }
+

@@ -4,7 +4,6 @@ import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
@@ -13,10 +12,10 @@ import java.util.Set;
 import java.util.UUID;
 
 @Data
-@Entity(name = "book")
+@Entity(name = "artwork")
 @NoArgsConstructor(force = true)
 @AllArgsConstructor
-public class Book {
+public class Artwork {
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -30,37 +29,19 @@ public class Book {
     private String title;
 
     @NotNull
-    private Date publishDate;
-
-    @NotNull
-    @Min(1)
-    private int numberOfPages;
+    private Date createDate;
 
     @NotBlank
     private String category;
 
-    @NotNull
-    @Min(0)
-    private Double price;
-
-    @OneToOne(mappedBy = "book")
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    private OrderItem orderItem;
-
-    @OneToOne(mappedBy = "book", cascade = CascadeType.REMOVE)
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    private Stock stock;
-
     @ManyToOne(optional = false)
-    @JoinColumn(name = "publisher_id")
+    @JoinColumn(name = "gallery_id")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private Publisher publisher;
+    private Gallery gallery;
 
-    @ManyToMany(mappedBy = "books")
+    @ManyToMany(mappedBy = "artworks")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private Set<Author> authors = new HashSet<>();
+    private Set<Artist> artists = new HashSet<>();
 }
