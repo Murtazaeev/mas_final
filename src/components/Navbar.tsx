@@ -13,7 +13,7 @@ function Navbar() {
   return (
     <div className="flex justify-between w-full h-[100px] bg-[#4478B5] items-center">
       <span className="ml-12 text-white text-[32px] font-semibold">
-        BookShop
+        Artwork Shop
       </span>
       <nav className="mr-12">
         <NavLink to="/customers" className={() => getNavLinkClass("/customer")}>

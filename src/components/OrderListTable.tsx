@@ -16,7 +16,12 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
 import { TransitionProps } from "@mui/material/transitions";
 import { useParams } from "react-router-dom";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
 import { CustomerData } from "./CustomerListTable";
+import EditIcon from "@mui/icons-material/Edit";
+import IconButton from "@mui/material/IconButton";
+import TextField from "@mui/material/TextField";
 
 interface OrderData {
   id: string;
@@ -33,11 +38,12 @@ interface InvoiceData {
 }
 
 interface OrderListTableProps {}
-
-const columns: readonly { id: keyof OrderData; label: string }[] = [
+const columns: readonly { id: keyof OrderData | "edit"; label: string }[] = [
+  { id: "id", label: "Order ID" },
   { id: "orderDate", label: "Order Date" },
   { id: "orderState", label: "Order Status" },
   { id: "retailPrice", label: "Retail Price" },
+  { id: "edit", label: "Edit" },
 ];
 
 const Transition = React.forwardRef(function Transition(
@@ -53,65 +59,107 @@ const OrderListTable: React.FC<OrderListTableProps> = ({}) => {
   const [open, setOpen] = useState(false);
   const [invoiceData, setInvoiceData] = useState<InvoiceData | null>(null);
   const [customers, setCustomers] = useState<CustomerData>();
-
+  const [editOrderId, setEditOrderId] = useState<string | null>(null);
+  const [newOrderState, setNewOrderState] = useState<string>("");
   const { customerId } = useParams<{ customerId: string }>();
 
   useEffect(() => {
-    if (customerId) {
-      const fetchOrders = async () => {
-        try {
-          const response = await axios.get(
+    const fetchData = async () => {
+      try {
+        if (customerId) {
+          const orderResponse = await axios.get<OrderData[]>(
             `http://localhost:8080/order/customerOrders/${customerId}`
           );
-          setOrders(response.data);
-        } catch (error) {
-          console.error("Error fetching orders:", error);
-        }
-      };
-      fetchOrders();
-    }
-  }, [customerId]);
+          setOrders(orderResponse.data);
 
-  useEffect(() => {
-    const fetchCustomers = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:8080/customer/userDetails/${customerId}`
-        );
-        setCustomers(response.data);
+          const customerResponse = await axios.get<CustomerData>(
+            `http://localhost:8080/customer/userDetails/${customerId}`
+          );
+          setCustomers(customerResponse.data);
+        }
       } catch (error) {
-        console.error("There was an error fetching the customers!", error);
+        console.error("Error fetching data:", error);
       }
     };
 
-    fetchCustomers();
+    fetchData();
   }, [customerId]);
 
   const handleGetInvoice = async (order: OrderData) => {
-    setSelectedOrder(order);
-
     if (
       order.orderState === "CANCELED" ||
       order.orderState === "WAITING_FOR_SUPPLY"
     ) {
       setInvoiceData(null);
       setOpen(true);
-    } else {
-      try {
-        const response = await axios.get(
-          `http://localhost:8080/invoice/${order.id}`
-        );
-        setInvoiceData(response.data);
-        setOpen(true);
-      } catch (error) {
-        console.error("Error fetching invoice:", error);
-        setInvoiceData(null);
-      }
+      return;
+    }
+
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/invoice/${order.id}`
+      );
+      setInvoiceData(response.data);
+      setOpen(true);
+    } catch (error) {
+      console.error("Error fetching invoice:", error);
+      setInvoiceData(null);
+      setOpen(true); // Ensure dialog opens even on error
     }
   };
 
   const handleRowClick = (order: OrderData) => {
-    handleGetInvoice(order);
+    if (editOrderId !== order.id) {
+      handleGetInvoice(order);
+    }
+  };
+
+  const handleOrderStateChange = async (orderId: string, newState: string) => {
+    try {
+      await axios.put(
+        `http://localhost:8080/order/${orderId}`,
+        { orderState: newState },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      // Update the order state in the local state immediately
+      setOrders((prevOrders) =>
+        prevOrders.map((order) =>
+          order.id === orderId ? { ...order, orderState: newState } : order
+        )
+      );
+
+      // Ensure the selected order state is updated immediately
+      setSelectedOrder((prevOrder) =>
+        prevOrder && prevOrder.id === orderId
+          ? { ...prevOrder, orderState: newState }
+          : prevOrder
+      );
+    } catch (error) {
+      console.error("Error updating order state:", error);
+    }
+  };
+  const handleEditClick = (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    orderId: string,
+    currentState: string
+  ) => {
+    event.stopPropagation();
+    setEditOrderId(orderId);
+    setNewOrderState(currentState);
+  };
+
+  const handleEditChange = (event: SelectChangeEvent<string>) => {
+    setNewOrderState(event.target.value as string);
+  };
+
+  const handleSaveEdit = async (orderId: string) => {
+    await handleOrderStateChange(orderId, newOrderState);
+    setEditOrderId(null);
   };
 
   const handleClose = () => {
@@ -136,7 +184,7 @@ const OrderListTable: React.FC<OrderListTableProps> = ({}) => {
           marginBottom: "auto",
         }}
       >
-        <TableContainer sx={{ maxHeight: 400 }}>
+        <TableContainer sx={{ maxHeight: 500 }}>
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow>
@@ -167,14 +215,54 @@ const OrderListTable: React.FC<OrderListTableProps> = ({}) => {
                       },
                     }}
                   >
+                    <TableCell align="center">{order.id}</TableCell>
                     <TableCell align="center">{order.orderDate}</TableCell>
-                    <TableCell align="center">{order.orderState}</TableCell>
+                    <TableCell align="center">
+                      {editOrderId === order.id ? (
+                        <Select
+                          value={newOrderState}
+                          onChange={handleEditChange}
+                        >
+                          <MenuItem value="IN_REALIZATION">
+                            IN_REALIZATION
+                          </MenuItem>
+                          <MenuItem value="WAITING_FOR_SUPPLY">
+                            WAITING_FOR_SUPPLY
+                          </MenuItem>
+                          <MenuItem value="CANCELED">CANCELED</MenuItem>
+                          <MenuItem value="COMPLETED">COMPLETED</MenuItem>
+                          <MenuItem value="ARCHIVED">ARCHIVED</MenuItem>
+                        </Select>
+                      ) : (
+                        order.orderState
+                      )}
+                    </TableCell>
                     <TableCell align="center">{order.retailPrice}</TableCell>
+                    <TableCell align="center">
+                      {editOrderId === order.id ? (
+                        <>
+                          <Button onClick={() => handleSaveEdit(order.id)}>
+                            Save
+                          </Button>
+                          <Button onClick={() => setEditOrderId(null)}>
+                            Cancel
+                          </Button>
+                        </>
+                      ) : (
+                        <IconButton
+                          onClick={(e) =>
+                            handleEditClick(e, order.id, order.orderState)
+                          }
+                        >
+                          <EditIcon />
+                        </IconButton>
+                      )}
+                    </TableCell>
                   </TableRow>
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={3} align="center">
+                  <TableCell colSpan={4} align="center">
                     The selected customer does not have any order at the moment
                   </TableCell>
                 </TableRow>
