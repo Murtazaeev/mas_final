@@ -21,13 +21,15 @@ import MenuItem from "@mui/material/MenuItem";
 import { CustomerData } from "./CustomerListTable";
 import EditIcon from "@mui/icons-material/Edit";
 import IconButton from "@mui/material/IconButton";
-import TextField from "@mui/material/TextField";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 interface OrderData {
   id: string;
   orderDate: string;
   orderState: string;
   retailPrice: number;
+  edit: string;
+  delete: string;
 }
 
 interface InvoiceData {
@@ -44,6 +46,7 @@ const columns: readonly { id: keyof OrderData | "edit"; label: string }[] = [
   { id: "orderState", label: "Order Status" },
   { id: "retailPrice", label: "Retail Price" },
   { id: "edit", label: "Edit" },
+  { id: "delete", label: "Delete" },
 ];
 
 const Transition = React.forwardRef(function Transition(
@@ -61,6 +64,9 @@ const OrderListTable: React.FC<OrderListTableProps> = ({}) => {
   const [customers, setCustomers] = useState<CustomerData>();
   const [editOrderId, setEditOrderId] = useState<string | null>(null);
   const [newOrderState, setNewOrderState] = useState<string>("");
+  const [deleteOrderId, setDeleteOrderId] = useState<string | null>(null);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+
   const { customerId } = useParams<{ customerId: string }>();
 
   useEffect(() => {
@@ -166,6 +172,34 @@ const OrderListTable: React.FC<OrderListTableProps> = ({}) => {
     setOpen(false);
   };
 
+  const handleDeleteOrder = async (orderId: string) => {
+    try {
+      await axios.delete(`http://localhost:8080/order/${orderId}`);
+      setOrders((prevOrders) =>
+        prevOrders.filter((order) => order.id !== orderId)
+      );
+      setDeleteOpen(false);
+    } catch (error) {
+      console.error("Error deleting order:", error);
+    }
+  };
+
+  const handleDeleteClick = (orderId: string) => {
+    setDeleteOrderId(orderId);
+    setDeleteOpen(true);
+  };
+
+  const handleDeleteClose = () => {
+    setDeleteOpen(false);
+    setDeleteOrderId(null);
+  };
+
+  const handleConfirmDelete = () => {
+    if (deleteOrderId) {
+      handleDeleteOrder(deleteOrderId);
+    }
+  };
+
   return (
     <div className="flex flex-col h-[550px] min-h-[680px]">
       <div className="flex justify-around items-center text-2xl text-gray-700 font-semibold mb-20  h-20 bg-gray-300 rounded-md">
@@ -215,6 +249,7 @@ const OrderListTable: React.FC<OrderListTableProps> = ({}) => {
                       },
                     }}
                   >
+                    {" "}
                     <TableCell align="center">{order.id}</TableCell>
                     <TableCell align="center">{order.orderDate}</TableCell>
                     <TableCell align="center">
@@ -250,19 +285,32 @@ const OrderListTable: React.FC<OrderListTableProps> = ({}) => {
                         </>
                       ) : (
                         <IconButton
-                          onClick={(e) =>
-                            handleEditClick(e, order.id, order.orderState)
-                          }
+                          style={{ color: "green" }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleEditClick(e, order.id, order.orderState);
+                          }}
                         >
                           <EditIcon />
                         </IconButton>
                       )}
                     </TableCell>
+                    <TableCell align="center">
+                      <IconButton
+                        style={{ color: "red" }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteClick(order.id);
+                        }}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </TableCell>
                   </TableRow>
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={4} align="center">
+                  <TableCell colSpan={5} align="center">
                     The selected customer does not have any order at the moment
                   </TableCell>
                 </TableRow>
@@ -320,6 +368,20 @@ const OrderListTable: React.FC<OrderListTableProps> = ({}) => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Close</Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog open={deleteOpen} onClose={handleDeleteClose}>
+        <DialogTitle>Delete Order</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to delete this order?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteClose}>Cancel</Button>
+          <Button onClick={handleConfirmDelete} color="secondary">
+            Delete
+          </Button>
         </DialogActions>
       </Dialog>
     </div>
